@@ -6,6 +6,7 @@ import { io, Socket } from "socket.io-client";
 import Game from "./Game";
 import GameStarter from "./GameStarter";
 import { LocalStorageKey } from "./LocalStorageKey";
+import Navbar from "./Navbar";
 import { PlayingCard } from "./PlayingCard";
 import { playingCardsDefault } from "./PlayingCardsDefault";
 import { SocketEvent } from "./SocketEvent";
@@ -161,6 +162,7 @@ export const App = () => {
 
   return (
     <ChakraProvider theme={theme}>
+      <Navbar />
       <Routes>
         <Route path="/" element={<GameStarter onGameStarted={startGame} />} />
         <Route
