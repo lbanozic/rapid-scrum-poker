@@ -82,6 +82,8 @@ export const App = () => {
 
       localStorage.setItem(LocalStorageKey.CreatedGameId, gameId);
 
+      setGameTableCards([]);
+
       navigate(`/${gameId}`);
     });
   }
