@@ -1,5 +1,4 @@
-import { Center, VStack } from "@chakra-ui/layout";
-import { Spinner } from "@chakra-ui/react";
+import { Center, Spinner, VStack } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import GameActions from "./GameActions";
@@ -66,7 +65,7 @@ export default function Game(props: {
 
   return (
     <>
-      <Center width="100vw" height="100vh">
+      <Center height="90vh">
         {props.isGameCheckingInProgress ? (
           <Spinner />
         ) : (

@@ -1,4 +1,4 @@
-import { HStack } from "@chakra-ui/layout";
+import { HStack } from "@chakra-ui/react";
 import React from "react";
 import GamePlayingCard from "./GamePlayingCard";
 import { PlayingCard } from "./PlayingCard";

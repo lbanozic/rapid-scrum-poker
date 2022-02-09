@@ -1,7 +1,4 @@
-import { Button } from "@chakra-ui/button";
-import { Input } from "@chakra-ui/input";
-import { HStack } from "@chakra-ui/layout";
-import { Text } from "@chakra-ui/react";
+import { Button, HStack, Input, Text } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { IoMdCheckmark } from "react-icons/io";
 import { MdContentCopy } from "react-icons/md";

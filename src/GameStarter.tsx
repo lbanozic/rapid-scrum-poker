@@ -13,7 +13,7 @@ export default function GameStarter(props: {
   }
 
   return (
-    <Center width="100vw" height="100vh">
+    <Center height="90vh">
       <Button
         size="lg"
         padding="12"
