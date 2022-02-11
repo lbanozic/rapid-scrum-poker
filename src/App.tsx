@@ -143,7 +143,7 @@ export const App = () => {
       setPlayingCards(playingCardsAfterToggle);
 
       socket?.emit(
-        SocketEvent.UpdatePlayer,
+        SocketEvent.UpdatePlayerCard,
         currentGameId,
         playerName,
         updatedPlayingCard.value,
@@ -160,9 +160,28 @@ export const App = () => {
     socket?.emit(SocketEvent.RestartGame, currentGameId);
   }
 
+  function getPlayerNames() {
+    return gameTableCards?.map((card) => card.playerName);
+  }
+
+  function renamePlayer(changedPlayerName: string) {
+    const currentPlayerName = localStorage.getItem(LocalStorageKey.PlayerName);
+
+    if (currentPlayerName) {
+      localStorage.setItem(LocalStorageKey.PlayerName, changedPlayerName);
+
+      socket?.emit(
+        SocketEvent.RenamePlayer,
+        currentGameId,
+        currentPlayerName,
+        changedPlayerName
+      );
+    }
+  }
+
   return (
     <ChakraProvider theme={theme}>
-      <Navbar />
+      <Navbar playerNames={getPlayerNames()} onPlayerRename={renamePlayer} />
       <Routes>
         <Route path="/" element={<GameStarter onGameStarted={startGame} />} />
         <Route

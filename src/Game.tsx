@@ -96,7 +96,7 @@ export default function Game(props: {
         <NewPlayerModal
           isOpen={isNewPlayerModalOpen}
           playerNames={getPlayerNames()}
-          onNewPlayerNameFormSubmitted={joinGame}
+          onFormSubmitted={joinGame}
         />
       )}
     </>

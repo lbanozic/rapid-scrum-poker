@@ -5,19 +5,22 @@ import {
   Input,
   Modal,
   ModalBody,
+  ModalCloseButton,
   ModalContent,
   ModalFooter,
   ModalHeader,
   ModalOverlay,
   useDisclosure,
 } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
-import { GoZap } from "react-icons/go";
+import React, { useEffect, useRef, useState } from "react";
+import { FaSave } from "react-icons/fa";
+import { LocalStorageKey } from "./LocalStorageKey";
 
 export default function NewPlayerModal(props: {
   isOpen?: boolean;
   playerNames: string[];
   onFormSubmitted: (playerName: string) => void;
+  onClose: () => void;
 }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -29,11 +32,16 @@ export default function NewPlayerModal(props: {
     }
   }, [props.isOpen, onOpen, onClose]);
 
-  const [playerName, setPlayerName] = useState("");
+  const currentPlayerName =
+    localStorage.getItem(LocalStorageKey.PlayerName) ?? "";
+
+  const [playerName, setPlayerName] = useState(currentPlayerName);
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const [isPlayerNameEmpty, setIsPlayerNameEmpty] = useState(true);
   const [isPlayerNameTaken, setIsPlayerNameTaken] = useState(false);
   const [formErrorMessage, setFormErrorMessage] = useState("");
+
+  const initialFocusRef = useRef(null);
 
   function updatePlayerNameChange(
     event: React.SyntheticEvent<HTMLInputElement>
@@ -45,14 +53,17 @@ export default function NewPlayerModal(props: {
     const playerNameTrimmed = playerName.trim();
 
     if (playerNameTrimmed === "") {
-      setFormErrorMessage("Name is required to join");
+      setFormErrorMessage("Name is required");
 
       setIsPlayerNameEmpty(true);
 
       return false;
     }
 
-    if (props.playerNames.includes(playerNameTrimmed)) {
+    if (
+      props.playerNames.includes(playerNameTrimmed) &&
+      playerNameTrimmed !== currentPlayerName
+    ) {
       setFormErrorMessage("Player name already taken");
 
       setIsPlayerNameTaken(true);
@@ -84,12 +95,14 @@ export default function NewPlayerModal(props: {
       isCentered
       closeOnOverlayClick={false}
       isOpen={isOpen}
-      onClose={onClose}
+      onClose={props.onClose}
+      initialFocusRef={initialFocusRef}
     >
       <ModalOverlay />
       <ModalContent borderRadius="24" p={4}>
         <form onSubmit={submitPlayerNameForm}>
-          <ModalHeader pt={8}>Enter name you want to use</ModalHeader>
+          <ModalHeader pt={8}>Player name</ModalHeader>
+          <ModalCloseButton />
           <ModalBody>
             <FormControl
               isInvalid={
@@ -101,6 +114,7 @@ export default function NewPlayerModal(props: {
                 padding="1.65rem"
                 borderRadius="16"
                 value={playerName}
+                ref={initialFocusRef}
                 onChange={updatePlayerNameChange}
               />
               <FormErrorMessage marginLeft="1.8rem">
@@ -117,9 +131,9 @@ export default function NewPlayerModal(props: {
               fontSize="xl"
               borderRadius="16"
               colorScheme="yellow"
-              rightIcon={<GoZap />}
+              rightIcon={<FaSave />}
             >
-              Join
+              Save
             </Button>
           </ModalFooter>
         </form>

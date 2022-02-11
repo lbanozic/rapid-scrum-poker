@@ -5,7 +5,8 @@ export enum SocketEvent {
   StartGame = "startGame",
   GetGame = "getGame",
   JoinGame = "joinGame",
-  UpdatePlayer = "updatePlayer",
+  UpdatePlayerCard = "updatePlayerCard",
   RevealCards = "revealCards",
   RestartGame = "restartGame",
+  RenamePlayer = "renamePlayer",
 }

@@ -1,8 +1,8 @@
-import { IconButton, Tooltip, WrapItem } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { IoMdShare } from "react-icons/io";
+import NavbarButton from "./NavbarButton";
 
-export default function NavBarGameShareButton() {
+export default function NavbarGameShareButton() {
   const [shareGameLinkButtonText, setShareGameLinkButtonText] =
     useState("Share game link");
 
@@ -21,20 +21,10 @@ export default function NavBarGameShareButton() {
   }
 
   return (
-    <WrapItem>
-      <Tooltip
-        label={shareGameLinkButtonText}
-        openDelay={500}
-        closeDelay={500}
-        closeOnClick={false}
-      >
-        <IconButton
-          aria-label="Share game link"
-          colorScheme="yellow"
-          icon={<IoMdShare />}
-          onClick={copyGameLink}
-        />
-      </Tooltip>
-    </WrapItem>
+    <NavbarButton
+      label={shareGameLinkButtonText}
+      icon={<IoMdShare />}
+      onClick={copyGameLink}
+    />
   );
 }
