@@ -27,6 +27,7 @@ type CardGame = {
 
 export const App = () => {
   const navigate = useNavigate();
+
   const currentGameId = window.location.pathname.slice(1);
 
   const [socket, setSocket] = useState<Socket>();

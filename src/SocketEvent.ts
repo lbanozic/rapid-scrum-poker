@@ -9,4 +9,5 @@ export enum SocketEvent {
   RevealCards = "revealCards",
   RestartGame = "restartGame",
   RenamePlayer = "renamePlayer",
+  LeaveGame = "leaveGame",
 }

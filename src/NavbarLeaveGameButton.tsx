@@ -1,16 +1,13 @@
 import React from "react";
 import { BiExit } from "react-icons/bi";
-import { useNavigate } from "react-router";
 import NavbarButton from "./NavbarButton";
 
-export default function NavbarLeaveGameButton() {
-  const navigate = useNavigate();
-
-  function leaveGame() {
-    navigate("/");
-  }
-
+export default function NavbarLeaveGameButton(props: { onClick: () => void }) {
   return (
-    <NavbarButton label="Leave game" icon={<BiExit />} onClick={leaveGame} />
+    <NavbarButton
+      label="Leave game"
+      icon={<BiExit />}
+      onClick={props.onClick}
+    />
   );
 }

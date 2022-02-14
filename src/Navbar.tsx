@@ -1,6 +1,6 @@
 import { Box, Flex, HStack, Spacer } from "@chakra-ui/react";
 import React, { useContext, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { LocalStorageKey } from "./LocalStorageKey";
 import NavbarGameShareButton from "./NavbarGameShareButton";
 import NavbarLeaveGameButton from "./NavbarLeaveGameButton";
@@ -10,7 +10,10 @@ import { SocketContext } from "./SocketContext";
 import { SocketEvent } from "./SocketEvent";
 
 export default function Navbar(props: { playerNames: string[] }) {
+  const navigate = useNavigate();
+
   const currentGameId = window.location.pathname.slice(1);
+
   const isGameCreator = !!localStorage.getItem(LocalStorageKey.CreatedGameId);
 
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
@@ -42,6 +45,16 @@ export default function Navbar(props: { playerNames: string[] }) {
     }
   }
 
+  function leaveGame() {
+    const playerName = localStorage.getItem(LocalStorageKey.PlayerName);
+
+    if (playerName) {
+      socket?.emit(SocketEvent.LeaveGame, currentGameId, playerName);
+    }
+
+    navigate("/");
+  }
+
   return (
     <Flex my={4} mx={12}>
       <Box>
@@ -60,7 +73,7 @@ export default function Navbar(props: { playerNames: string[] }) {
           {!isGameCreator && (
             <NavbarSettingsButton onClick={openSettingsModal} />
           )}
-          <NavbarLeaveGameButton />
+          <NavbarLeaveGameButton onClick={leaveGame} />
         </HStack>
       )}
       {!isGameCreator && (
