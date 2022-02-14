@@ -1,5 +1,5 @@
 import { Center, Spinner, VStack } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router";
 import GameActions from "./GameActions";
 import GamePlayerHands from "./GamePlayerHands";
@@ -8,6 +8,8 @@ import GameTable from "./GameTable";
 import { LocalStorageKey } from "./LocalStorageKey";
 import NewPlayerModal from "./NewPlayerModal";
 import { PlayingCard } from "./PlayingCard";
+import { SocketContext } from "./SocketContext";
+import { SocketEvent } from "./SocketEvent";
 import { TableCard } from "./TableCard";
 
 export default function Game(props: {
@@ -18,8 +20,6 @@ export default function Game(props: {
   onGameLoad: (gameId: string) => void;
   onGameJoin: (playerName: string) => void;
   onCardSelected: (playerName: string, selectedCardValue: string) => void;
-  onCardsReveal: () => void;
-  onGameRestart: () => void;
 }) {
   const playerName = localStorage.getItem(LocalStorageKey.PlayerName);
   const isGameCreator = !!localStorage.getItem(LocalStorageKey.CreatedGameId);
@@ -28,6 +28,8 @@ export default function Game(props: {
   const gameId = params.gameId;
 
   const [isNewPlayerModalOpen, setIsNewPlayerModalOpen] = useState(!playerName);
+
+  const { socket } = useContext(SocketContext);
 
   useEffect(() => {
     if (
@@ -55,6 +57,14 @@ export default function Game(props: {
     props.onGameJoin(playerName);
   }
 
+  function revealCards() {
+    socket?.emit(SocketEvent.RevealCards, gameId);
+  }
+
+  function restartGame() {
+    socket?.emit(SocketEvent.RestartGame, gameId);
+  }
+
   function areCardsRevealed() {
     return props.gameTableCards?.some((card) => card.isRevealed);
   }
@@ -79,8 +89,8 @@ export default function Game(props: {
             {isGameCreator && props.gameTableCards?.length > 0 && (
               <GameActions
                 isRevealCardsButtonEnabled={!areCardsRevealed()}
-                onGameRestart={props.onGameRestart}
-                onCardsReveal={props.onCardsReveal}
+                onGameRestart={restartGame}
+                onCardsReveal={revealCards}
               />
             )}
             {!isGameCreator && !areCardsRevealed() && (

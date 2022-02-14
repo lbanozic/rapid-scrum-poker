@@ -9,6 +9,7 @@ import { LocalStorageKey } from "./LocalStorageKey";
 import Navbar from "./Navbar";
 import { PlayingCard } from "./PlayingCard";
 import { playingCardsDefault } from "./PlayingCardsDefault";
+import { SocketContext } from "./SocketContext";
 import { SocketEvent } from "./SocketEvent";
 import { TableCard } from "./TableCard";
 
@@ -152,56 +153,33 @@ export const App = () => {
     }
   }
 
-  function revealCards() {
-    socket?.emit(SocketEvent.RevealCards, currentGameId);
-  }
-
-  function restartGame() {
-    socket?.emit(SocketEvent.RestartGame, currentGameId);
-  }
-
   function getPlayerNames() {
     return gameTableCards?.map((card) => card.playerName);
   }
 
-  function renamePlayer(changedPlayerName: string) {
-    const currentPlayerName = localStorage.getItem(LocalStorageKey.PlayerName);
-
-    if (currentPlayerName) {
-      localStorage.setItem(LocalStorageKey.PlayerName, changedPlayerName);
-
-      socket?.emit(
-        SocketEvent.RenamePlayer,
-        currentGameId,
-        currentPlayerName,
-        changedPlayerName
-      );
-    }
-  }
-
   return (
     <ChakraProvider theme={theme}>
-      <Navbar playerNames={getPlayerNames()} onPlayerRename={renamePlayer} />
-      <Routes>
-        <Route path="/" element={<GameStarter onGameStarted={startGame} />} />
-        <Route
-          path="/:gameId"
-          element={
-            <Game
-              isConnected={isConnected}
-              isGameCheckingInProgress={isGameCheckingInProgress}
-              gameTableCards={gameTableCards}
-              playingCards={playingCards}
-              onGameLoad={getGame}
-              onGameJoin={joinGame}
-              onCardSelected={updatePlayingCards}
-              onCardsReveal={revealCards}
-              onGameRestart={restartGame}
-            />
-          }
-        />
-        <Route path="*" element={<GameStarter />} />
-      </Routes>
+      <SocketContext.Provider value={{ socket, setSocket }}>
+        <Navbar playerNames={getPlayerNames()} />
+        <Routes>
+          <Route path="/" element={<GameStarter onGameStarted={startGame} />} />
+          <Route
+            path="/:gameId"
+            element={
+              <Game
+                isConnected={isConnected}
+                isGameCheckingInProgress={isGameCheckingInProgress}
+                gameTableCards={gameTableCards}
+                playingCards={playingCards}
+                onGameLoad={getGame}
+                onGameJoin={joinGame}
+                onCardSelected={updatePlayingCards}
+              />
+            }
+          />
+          <Route path="*" element={<GameStarter />} />
+        </Routes>
+      </SocketContext.Provider>
     </ChakraProvider>
   );
 };

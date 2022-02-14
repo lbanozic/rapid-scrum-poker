@@ -1,20 +1,21 @@
 import { Box, Flex, HStack, Spacer } from "@chakra-ui/react";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import { LocalStorageKey } from "./LocalStorageKey";
 import NavbarGameShareButton from "./NavbarGameShareButton";
 import NavbarLeaveGameButton from "./NavbarLeaveGameButton";
 import NavbarSettingsButton from "./NavbarSettingsButton";
 import SettingsModal from "./SettingsModal";
+import { SocketContext } from "./SocketContext";
+import { SocketEvent } from "./SocketEvent";
 
-export default function Navbar(props: {
-  playerNames: string[];
-  onPlayerRename: (changedPlayerName: string) => void;
-}) {
+export default function Navbar(props: { playerNames: string[] }) {
   const currentGameId = window.location.pathname.slice(1);
   const isGameCreator = !!localStorage.getItem(LocalStorageKey.CreatedGameId);
 
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
+
+  const { socket } = useContext(SocketContext);
 
   function openSettingsModal() {
     setIsSettingsModalOpen(true);
@@ -27,7 +28,18 @@ export default function Navbar(props: {
   function renamePlayer(changedPlayerName: string) {
     closeSettingsModal();
 
-    props.onPlayerRename(changedPlayerName);
+    const currentPlayerName = localStorage.getItem(LocalStorageKey.PlayerName);
+
+    if (currentPlayerName) {
+      localStorage.setItem(LocalStorageKey.PlayerName, changedPlayerName);
+
+      socket?.emit(
+        SocketEvent.RenamePlayer,
+        currentGameId,
+        currentPlayerName,
+        changedPlayerName
+      );
+    }
   }
 
   return (
