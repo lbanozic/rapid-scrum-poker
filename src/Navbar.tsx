@@ -56,7 +56,7 @@ export default function Navbar(props: { playerNames: string[] }) {
   }
 
   return (
-    <Flex my={4} mx={12}>
+    <Flex my={4} mx={12} alignItems="center">
       <Box>
         <Link to="/">
           <img

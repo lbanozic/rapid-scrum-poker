@@ -28,8 +28,6 @@ type CardGame = {
 export const App = () => {
   const navigate = useNavigate();
 
-  const currentGameId = window.location.pathname.slice(1);
-
   const [socket, setSocket] = useState<Socket>();
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const [isGameCheckingInProgress, setIsGameCheckingInProgress] =
@@ -50,6 +48,8 @@ export const App = () => {
     });
 
     socket.on(SocketEvent.UpdateGame, (game: CardGame) => {
+      const currentGameId = getCurrentGameId();
+
       if (currentGameId === game.id) {
         const gameTableCards: TableCard[] = getGameTableCards(game);
 
@@ -58,11 +58,17 @@ export const App = () => {
     });
 
     socket.on(SocketEvent.RestartPlayingCards, (gameId) => {
+      const currentGameId = getCurrentGameId();
+
       if (currentGameId === gameId) {
         setPlayingCards(playingCardsDefault);
       }
     });
-  }, [socket, currentGameId]);
+  }, [socket]);
+
+  function getCurrentGameId() {
+    return window.location.pathname.slice(1);
+  }
 
   function getGameTableCards(game: CardGame) {
     return (
@@ -128,6 +134,8 @@ export const App = () => {
   }
 
   function joinGame(playerName: string) {
+    const currentGameId = getCurrentGameId();
+
     socket?.emit(SocketEvent.JoinGame, currentGameId, playerName);
   }
 
@@ -143,6 +151,8 @@ export const App = () => {
 
     if (updatedPlayingCard) {
       setPlayingCards(playingCardsAfterToggle);
+
+      const currentGameId = getCurrentGameId();
 
       socket?.emit(
         SocketEvent.UpdatePlayerCard,
