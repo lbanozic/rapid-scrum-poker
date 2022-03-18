@@ -37,7 +37,7 @@ export const App = () => {
     useState<PlayingCard[]>(playingCardsDefault);
 
   useEffect(() => {
-    setSocket(io("http://localhost:4000"));
+    setSocket(io("https://rapid-scrum-poker-service.herokuapp.com"));
   }, []);
 
   useEffect(() => {
