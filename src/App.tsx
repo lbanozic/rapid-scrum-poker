@@ -35,6 +35,8 @@ export const App = () => {
   const [gameTableCards, setGameTableCards] = useState<TableCard[]>([]);
   const [playingCards, setPlayingCards] =
     useState<PlayingCard[]>(playingCardsDefault);
+  const [isStartingGameInProgress, setIsStartingGameInProgress] =
+    useState<boolean>(false);
 
   useEffect(() => {
     setSocket(io("https://rapid-scrum-poker-service.herokuapp.com"));
@@ -82,7 +84,11 @@ export const App = () => {
   }
 
   function startGame(gameId: string) {
+    setIsStartingGameInProgress(true);
+
     socket?.emit(SocketEvent.StartGame, gameId, () => {
+      setIsStartingGameInProgress(false);
+
       const playerName = localStorage.getItem(LocalStorageKey.PlayerName);
 
       if (playerName) {
@@ -173,7 +179,15 @@ export const App = () => {
       <SocketContext.Provider value={{ socket, setSocket }}>
         <Navbar playerNames={getPlayerNames()} />
         <Routes>
-          <Route path="/" element={<GameStarter onGameStarted={startGame} />} />
+          <Route
+            path="/"
+            element={
+              <GameStarter
+                onGameStarted={startGame}
+                isStartingInProgress={isStartingGameInProgress}
+              />
+            }
+          />
           <Route
             path="/:gameId"
             element={

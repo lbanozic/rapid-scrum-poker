@@ -4,6 +4,7 @@ import React from "react";
 import { GoZap } from "react-icons/go";
 
 export default function GameStarter(props: {
+  isStartingInProgress?: boolean;
   onGameStarted?: (gameId: string) => void;
 }) {
   function navigateToNewGame() {
@@ -21,6 +22,8 @@ export default function GameStarter(props: {
         fontSize="3xl"
         colorScheme="yellow"
         rightIcon={<GoZap />}
+        isLoading={props.isStartingInProgress}
+        loadingText="Starting game"
         onClick={navigateToNewGame}
       >
         Start new game
