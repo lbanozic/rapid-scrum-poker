@@ -39,7 +39,12 @@ export const App = () => {
     useState<boolean>(false);
 
   useEffect(() => {
-    setSocket(io("https://rapid-scrum-poker-service.herokuapp.com"));
+    setSocket(
+      io(
+        process.env.REACT_APP_SOCKET_SERVER_URL ||
+          "https://rapid-scrum-poker-service.herokuapp.com"
+      )
+    );
   }, []);
 
   useEffect(() => {
