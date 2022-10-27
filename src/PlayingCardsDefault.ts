@@ -1,4 +1,4 @@
-import { PlayingCard } from "./PlayingCard";
+import { PlayingCard } from "./types/PlayingCard";
 
 /**
  * A list of default values for cards in player's hands.

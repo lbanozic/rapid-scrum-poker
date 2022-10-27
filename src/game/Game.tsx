@@ -1,16 +1,16 @@
 import { Center, Spinner, VStack } from "@chakra-ui/react";
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router";
+import { SocketContext } from "../SocketContext";
+import { LocalStorageKey } from "../types/LocalStorageKey";
+import { PlayingCard } from "../types/PlayingCard";
+import { SocketEvent } from "../types/SocketEvent";
+import { TableCard } from "../types/TableCard";
 import GameActions from "./GameActions";
 import GamePlayerHands from "./GamePlayerHands";
 import GameShare from "./GameShare";
 import GameTable from "./GameTable";
-import { LocalStorageKey } from "./LocalStorageKey";
 import NewPlayerModal from "./NewPlayerModal";
-import { PlayingCard } from "./PlayingCard";
-import { SocketContext } from "./SocketContext";
-import { SocketEvent } from "./SocketEvent";
-import { TableCard } from "./TableCard";
 
 /**
  * A component for main game features.

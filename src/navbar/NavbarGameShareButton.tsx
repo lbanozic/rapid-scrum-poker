@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { IoMdShare } from "react-icons/io";
 import NavbarButton from "./NavbarButton";
 

@@ -1,13 +1,13 @@
 import { Box, Flex, HStack, Spacer } from "@chakra-ui/react";
-import React, { useContext, useState } from "react";
+import { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { LocalStorageKey } from "./LocalStorageKey";
 import NavbarGameShareButton from "./NavbarGameShareButton";
 import NavbarLeaveGameButton from "./NavbarLeaveGameButton";
 import NavbarSettingsButton from "./NavbarSettingsButton";
 import SettingsModal from "./SettingsModal";
-import { SocketContext } from "./SocketContext";
-import { SocketEvent } from "./SocketEvent";
+import { SocketContext } from "../SocketContext";
+import { LocalStorageKey } from "../types/LocalStorageKey";
+import { SocketEvent } from "../types/SocketEvent";
 
 /**
  * A component for navbar with items like: logo, settings button, share button and leave game button.

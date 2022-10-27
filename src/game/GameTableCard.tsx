@@ -1,6 +1,5 @@
 import { Badge, Box, Center, VStack } from "@chakra-ui/react";
-import React from "react";
-import { TableCard } from "./TableCard";
+import { TableCard } from "../types/TableCard";
 
 /**
  * A component for showing the card on the table.

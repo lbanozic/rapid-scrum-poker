@@ -1,5 +1,4 @@
 import { Flex } from "@chakra-ui/react";
-import React from "react";
 import { GoEye } from "react-icons/go";
 import { MdRestartAlt } from "react-icons/md";
 import GameActionButton from "./GameActionButton";

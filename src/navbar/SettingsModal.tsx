@@ -14,7 +14,7 @@ import {
 } from "@chakra-ui/react";
 import React, { useEffect, useRef, useState } from "react";
 import { FaSave } from "react-icons/fa";
-import { LocalStorageKey } from "./LocalStorageKey";
+import { LocalStorageKey } from "../types/LocalStorageKey";
 
 /**
  * A component for settings modal.

@@ -1,4 +1,3 @@
-import React from "react";
 import { IoMdSettings } from "react-icons/io";
 import NavbarButton from "./NavbarButton";
 

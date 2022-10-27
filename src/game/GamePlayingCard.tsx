@@ -1,6 +1,5 @@
 import { Box, Center } from "@chakra-ui/react";
-import React from "react";
-import { PlayingCard } from "./PlayingCard";
+import { PlayingCard } from "../types/PlayingCard";
 
 /**
  * A component for showing the card in player's hands.

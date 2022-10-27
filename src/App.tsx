@@ -1,45 +1,17 @@
 import { ChakraProvider, theme } from "@chakra-ui/react";
-import * as React from "react";
 import { useEffect, useState } from "react";
 import { Route, Routes, useNavigate } from "react-router";
 import { io, Socket } from "socket.io-client";
-import Game from "./Game";
-import GameStarter from "./GameStarter";
-import { LocalStorageKey } from "./LocalStorageKey";
-import Navbar from "./Navbar";
-import { PlayingCard } from "./PlayingCard";
+import Game from "./game/Game";
+import GameStarter from "./game/GameStarter";
+import Navbar from "./navbar/Navbar";
 import { playingCardsDefault } from "./PlayingCardsDefault";
 import { SocketContext } from "./SocketContext";
-import { SocketEvent } from "./SocketEvent";
-import { TableCard } from "./TableCard";
-
-/**
- * A type for storing all state data for a player that is part of the card game.
- */
-type CardGamePlayer = {
-  /** Name of the card game player. For example, "John". */
-  name: string;
-
-  /** Value of the player's card. For example: "3", "5", "8", or "13". */
-  cardValue: string;
-
-  /** Flag which determines if player's card is selected. */
-  isCardSelected: boolean;
-};
-
-/**
- * A type for storing all state data for a single game.
- */
-type CardGame = {
-  /** Value that identifies the card game. For example, tMgpRFo9Fd. */
-  id: string;
-
-  /** Flag which determines if all cards are revealed in the game. */
-  areCardsRevealed: boolean;
-
-  /** Array which holds all the game's current players. */
-  players: CardGamePlayer[];
-};
+import { CardGame } from "./types/CardGame";
+import { LocalStorageKey } from "./types/LocalStorageKey";
+import { PlayingCard } from "./types/PlayingCard";
+import { SocketEvent } from "./types/SocketEvent";
+import { TableCard } from "./types/TableCard";
 
 /**
  * A main app component.

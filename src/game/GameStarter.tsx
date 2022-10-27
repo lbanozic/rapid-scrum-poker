@@ -1,6 +1,5 @@
 import { Button, Center } from "@chakra-ui/react";
 import { nanoid } from "nanoid";
-import React from "react";
 import { GoZap } from "react-icons/go";
 
 /**

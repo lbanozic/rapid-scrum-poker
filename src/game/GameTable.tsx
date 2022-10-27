@@ -1,7 +1,6 @@
 import { Flex } from "@chakra-ui/react";
-import React from "react";
+import { TableCard } from "../types/TableCard";
 import GameTableCard from "./GameTableCard";
-import { TableCard } from "./TableCard";
 
 /**
  * A component for game table cards container.

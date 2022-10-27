@@ -1,7 +1,6 @@
 import { HStack } from "@chakra-ui/react";
-import React from "react";
+import { PlayingCard } from "../types/PlayingCard";
 import GamePlayingCard from "./GamePlayingCard";
-import { PlayingCard } from "./PlayingCard";
 
 /**
  * A component for player's cards container.
