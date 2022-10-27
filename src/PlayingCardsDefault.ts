@@ -1,5 +1,8 @@
 import { PlayingCard } from "./PlayingCard";
 
+/**
+ * A list of default values for cards in player's hands.
+ */
 export const playingCardsDefault: PlayingCard[] = [
   {
     value: "0",

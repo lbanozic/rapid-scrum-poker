@@ -2,7 +2,13 @@ import React from "react";
 import { IoMdSettings } from "react-icons/io";
 import NavbarButton from "./NavbarButton";
 
-export default function NavbarSettingsButton(props: { onClick: () => void }) {
+/**
+ * A component for navbar settings button.
+ */
+export default function NavbarSettingsButton(props: {
+  /** Gets called on navbar settings button click. */
+  onClick: () => void;
+}) {
   return (
     <NavbarButton
       label="Open settings"

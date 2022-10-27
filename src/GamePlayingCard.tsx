@@ -2,8 +2,16 @@ import { Box, Center } from "@chakra-ui/react";
 import React from "react";
 import { PlayingCard } from "./PlayingCard";
 
+/**
+ * A component for showing the card in player's hands.
+ */
 export default function GamePlayingCard(
   props: PlayingCard & {
+    /**
+     * Gets called when player selectes this card.
+     *
+     * @param selectedCardValue value of selected card, for example: "3", "5", or "8"
+     */
     onCardSelected: (selectedCardValue: string) => void;
   }
 ) {
@@ -16,6 +24,7 @@ export default function GamePlayingCard(
   let cardTransform = undefined;
   const transformUp = "translateY(-0.4rem)";
 
+  // if this card is selected, set selected card styles and lift the card
   if (props.isSelected) {
     cardBorderColor = "yellow.400";
     cardBorderColorHover = "yellow.300";
@@ -23,6 +32,9 @@ export default function GamePlayingCard(
     cardTransform = transformUp;
   }
 
+  /**
+   * Calls a on card selected function prop.
+   */
   function playingCardSelected() {
     props.onCardSelected(props.value);
   }
@@ -38,6 +50,7 @@ export default function GamePlayingCard(
       borderRadius="2xl"
       boxShadow={cardBoxShadow}
       transform={cardTransform}
+      // on hover, change the style and lift the card
       _hover={{
         boxShadow: "lg",
         transition: "0.1s",

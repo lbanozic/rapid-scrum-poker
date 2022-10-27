@@ -3,9 +3,16 @@ import React from "react";
 import GameTableCard from "./GameTableCard";
 import { TableCard } from "./TableCard";
 
-export default function GameTable(props: { gameTableCards: TableCard[] }) {
+/**
+ * A component for game table cards container.
+ */
+export default function GameTable(props: {
+  /** A list of cards currently in the game to show on the table. */
+  gameTableCards: TableCard[];
+}) {
   return (
     <Flex justifyContent="space-evenly" flexWrap="wrap" marginBottom="4rem">
+      {/* show game table card for each card on the table */}
       {props.gameTableCards.map((gameTableCard) => (
         <GameTableCard
           key={gameTableCard.playerName}

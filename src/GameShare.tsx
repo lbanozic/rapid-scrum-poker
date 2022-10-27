@@ -3,30 +3,53 @@ import React, { useState } from "react";
 import { IoMdCheckmark } from "react-icons/io";
 import { MdContentCopy } from "react-icons/md";
 
+/**
+ * A component for game share button.
+ */
 export default function GameShare() {
+  const gameLinkDefaultText = "Copy game link";
+  const gameLinkCopiedText = "Link copied!";
+
   const gameLink = window.location.href;
 
+  // initialize the game link button text state and set it to "Copy game link"
   const [gameLinkButtonText, setGameLinkButtonText] =
-    useState("Copy game link");
+    useState(gameLinkDefaultText);
+
+  // initialize the game link button icon state and set it to the copy icon
   const [gameLinkButtonIcon, setGameLinkButtonIcon] =
     useState<React.ReactElement>(<MdContentCopy />);
 
+  /**
+   * Selects the game link text in readonly input field so user can more easily copy the game link.
+   *
+   * @param event game link element click event
+   */
   function selectLinkText(event: React.SyntheticEvent<HTMLInputElement>) {
     event.currentTarget.select();
   }
 
+  /**
+   * Copies current value of browser URL to clipboard and sets game link button text and icon.
+   */
   function copyGameLink() {
-    if (gameLinkButtonText === "Link copied!") {
+    // if user still sees the link copied button text, exit the function
+    if (gameLinkButtonText === gameLinkCopiedText) {
       return;
     }
 
+    // copy current browser URL to clipboard
     navigator.clipboard.writeText(gameLink);
 
-    setGameLinkButtonText("Link copied!");
+    // set game link button text state to copied so user can see that link has been copied
+    setGameLinkButtonText(gameLinkCopiedText);
+
+    // set game link button icon state to checkmark so user can see that link has been copied
     setGameLinkButtonIcon(<IoMdCheckmark />);
 
+    // after 2 seconds, reset game link text and icon to the default value
     setTimeout(() => {
-      setGameLinkButtonText("Copy game link");
+      setGameLinkButtonText(gameLinkDefaultText);
       setGameLinkButtonIcon(<MdContentCopy />);
     }, 2000);
   }

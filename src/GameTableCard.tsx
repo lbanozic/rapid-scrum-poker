@@ -2,6 +2,9 @@ import { Badge, Box, Center, VStack } from "@chakra-ui/react";
 import React from "react";
 import { TableCard } from "./TableCard";
 
+/**
+ * A component for showing the card on the table.
+ */
 export default function GameTableCard(props: TableCard) {
   let cardBackgroundColor = "gray.400";
   let cardBorderWidth: string | undefined = undefined;
@@ -9,6 +12,7 @@ export default function GameTableCard(props: TableCard) {
   let cardBorderColor: string | undefined = undefined;
   let playerBadgeColorScheme: string | undefined = undefined;
 
+  // set different card styles if the card is revealed or selected
   if (props.isRevealed) {
     cardBackgroundColor = "white";
     cardBorderWidth = "0.5rem";
@@ -32,6 +36,7 @@ export default function GameTableCard(props: TableCard) {
           height="7.5rem"
           borderRadius="lg"
         >
+          {/* show card value if card value exists and card is revealed */}
           {props.value && props.isRevealed && (
             <Center width="100%" height="100%">
               <Box fontWeight="bold" fontSize="xl">
