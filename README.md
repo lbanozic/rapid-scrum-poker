@@ -20,4 +20,4 @@ App was created using [Create React App](https://create-react-app.dev/) and uses
 
 UI is built using [Chakra UI](https://chakra-ui.com/) component library.
 
-The app is communicating with the server by using WebSockets with [Socket.IO](https://socket.io/).
+The app is communicating with the server by using WebSockets with [Socket.IO](https://socket.io/) and is hosted on [Render](https://render.com/).
