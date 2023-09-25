@@ -2,11 +2,17 @@ import { Button, HStack, Input, Text } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { IoMdCheckmark } from "react-icons/io";
 import { MdContentCopy } from "react-icons/md";
+import { GoZap } from "react-icons/go";
 
 /**
  * A component for game share button.
  */
-export default function GameShare() {
+export default function GameShare(props: {
+  /**
+   * Gets called on join button click.
+   */
+  onJoinButtonClick: () => void;
+}) {
   const gameLinkDefaultText = "Copy game link";
   const gameLinkCopiedText = "Link copied!";
 
@@ -82,6 +88,23 @@ export default function GameShare() {
           onClick={copyGameLink}
         >
           {gameLinkButtonText}
+        </Button>
+      </HStack>
+      <HStack>
+        <Text fontSize="xl" fontWeight="bold">
+          Or join the game:
+        </Text>
+        <Button
+          size="lg"
+          margin="3"
+          padding="7"
+          fontSize="xl"
+          borderRadius="16"
+          colorScheme="yellow"
+          rightIcon={<GoZap />}
+          onClick={props.onJoinButtonClick}
+        >
+          Join
         </Button>
       </HStack>
     </>

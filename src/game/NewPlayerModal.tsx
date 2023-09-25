@@ -5,13 +5,14 @@ import {
   Input,
   Modal,
   ModalBody,
+  ModalCloseButton,
   ModalContent,
   ModalFooter,
   ModalHeader,
   ModalOverlay,
   useDisclosure,
 } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { GoZap } from "react-icons/go";
 
 /**
@@ -30,6 +31,9 @@ export default function NewPlayerModal(props: {
    * @param playerName name of the player to submit the form with
    */
   onFormSubmitted: (playerName: string) => void;
+
+  /** Gets called on new player modal close. */
+  onClose: () => void;
 }) {
   // initialize open flag and open/close modal functions from chakra useDisclosure hook
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -57,6 +61,9 @@ export default function NewPlayerModal(props: {
 
   // initialize form error message state with empty string
   const [formErrorMessage, setFormErrorMessage] = useState("");
+
+  // initialize focus ref used to set initial focus on the player name input field in the modal
+  const initialFocusRef = useRef(null);
 
   /**
    * Sets player name state to the updated value from input event.
@@ -122,12 +129,14 @@ export default function NewPlayerModal(props: {
       isCentered
       closeOnOverlayClick={false}
       isOpen={isOpen}
-      onClose={onClose}
+      onClose={props.onClose}
+      initialFocusRef={initialFocusRef}
     >
       <ModalOverlay />
       <ModalContent borderRadius="24" p={4}>
         <form onSubmit={submitPlayerNameForm}>
-          <ModalHeader pt={8}>Enter name you want to use</ModalHeader>
+          <ModalHeader pt={8}>Enter a name you want to use</ModalHeader>
+          <ModalCloseButton />
           <ModalBody>
             <FormControl
               // form is invalid if the player's name is empty or already taken
@@ -140,6 +149,7 @@ export default function NewPlayerModal(props: {
                 padding="1.65rem"
                 borderRadius="16"
                 value={playerName}
+                ref={initialFocusRef}
                 onChange={updatePlayerName}
               />
               <FormErrorMessage marginLeft="1.8rem">

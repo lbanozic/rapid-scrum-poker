@@ -4,6 +4,7 @@ import { Route, Routes, useNavigate } from "react-router";
 import { io, Socket } from "socket.io-client";
 import Game from "./game/Game";
 import GameStarter from "./game/GameStarter";
+import NewPlayerModal from "./game/NewPlayerModal";
 import Navbar from "./navbar/Navbar";
 import { playingCardsDefault } from "./PlayingCardsDefault";
 import { SocketContext } from "./SocketContext";
@@ -17,6 +18,9 @@ import { TableCard } from "./types/TableCard";
  * A main app component.
  */
 export const App = () => {
+  const isGameCreator = !!localStorage.getItem(LocalStorageKey.CreatedGameId);
+  const currentPlayerName = localStorage.getItem(LocalStorageKey.PlayerName);
+
   // get the navigate method from React Router used for changing the browser location
   const navigate = useNavigate();
 
@@ -40,6 +44,9 @@ export const App = () => {
   // initialize starting game in progress flag state and set it to false
   const [isStartingGameInProgress, setIsStartingGameInProgress] =
     useState<boolean>(false);
+
+  // initialize new player modal open flag state
+  const [isNewPlayerModalOpen, setIsNewPlayerModalOpen] = useState(false);
 
   // connect to socket server and run it only once
   useEffect(() => {
@@ -121,14 +128,6 @@ export const App = () => {
       // set starting game in progress flag state to false, since game has been started
       setIsStartingGameInProgress(false);
 
-      // get current player's name from the local storage
-      const playerName = localStorage.getItem(LocalStorageKey.PlayerName);
-
-      // if the player exists, remove it from local storage since game creator is not a player
-      if (playerName) {
-        localStorage.removeItem(LocalStorageKey.PlayerName);
-      }
-
       // set newly created game id to local storage
       localStorage.setItem(LocalStorageKey.CreatedGameId, gameId);
 
@@ -143,10 +142,16 @@ export const App = () => {
   /**
    * Emits a get game event with given game id to the server and after server fetches the game,
    * sets the fetched game data.
+   * Opens new player modal if current player is not set.
    *
    * @param gameId game id used to get the data from server
    */
   function getGame(gameId: string) {
+    // open new player modal if current player is not set and player didn't create the game
+    if (!currentPlayerName && !isGameCreator) {
+      openNewPlayerModal();
+    }
+
     // emit get game event with give game id and provide callback function that server can call after
     // game has been successfully fetched
     socket?.emit(SocketEvent.GetGame, gameId, (game: CardGame) => {
@@ -174,8 +179,8 @@ export const App = () => {
           const isPlayerAlreadyInGame = gameTableCards?.some(
             (card) => card.playerName === playerName
           );
-          if (!isPlayerAlreadyInGame) {
-            joinGame(playerName);
+          if (!isPlayerAlreadyInGame && !isGameCreator) {
+            addNewPlayerToGame(playerName);
           }
         }
       }
@@ -186,15 +191,36 @@ export const App = () => {
   }
 
   /**
-   * Emits a join game event with current game id and player name to the server
-   * so server can add the new player to the game and update the game with the new player.
+   * Adds new player name to local storage, closes new player modal and joins new player to the game.
    *
-   * @param playerName new player's name to join the game
+   * @param newPlayerName new player's name to join the game
    */
-  function joinGame(playerName: string) {
-    const currentGameId = getCurrentGameId();
+  function addNewPlayerToGame(newPlayerName: string) {
+    setIsNewPlayerModalOpen(false);
 
-    socket?.emit(SocketEvent.JoinGame, currentGameId, playerName);
+    // update player name key in local storage with the player's changed name
+    localStorage.setItem(LocalStorageKey.PlayerName, newPlayerName);
+
+    joinGame();
+  }
+
+  /**
+   * Emits a join game event with current game id and current player's name to the server
+   * so server can add the player to the game and update the game with the new player.
+   * If player's name is not set, opens new player modal.
+   */
+  function joinGame() {
+    const playerName = localStorage.getItem(LocalStorageKey.PlayerName);
+
+    if (playerName) {
+      const currentGameId = getCurrentGameId();
+
+      socket?.emit(SocketEvent.JoinGame, currentGameId, playerName);
+
+      return;
+    }
+
+    openNewPlayerModal();
   }
 
   /**
@@ -241,10 +267,24 @@ export const App = () => {
     return gameTableCards?.map((card) => card.playerName);
   }
 
+  /**
+   * Sets new player modal opened flag state to true so new player modal can be opened.
+   */
+  function openNewPlayerModal() {
+    setIsNewPlayerModalOpen(true);
+  }
+
+  /**
+   * Sets new player modal opened flag state to false so new player modal can be closed.
+   */
+  function closeNewPlayerModal() {
+    setIsNewPlayerModalOpen(false);
+  }
+
   return (
     <ChakraProvider theme={theme}>
       <SocketContext.Provider value={{ socket, setSocket }}>
-        <Navbar playerNames={getPlayerNames()} />
+        <Navbar playerNames={getPlayerNames()} onJoinButtonClick={joinGame} />
         <Routes>
           <Route
             path="/"
@@ -258,15 +298,26 @@ export const App = () => {
           <Route
             path="/:gameId"
             element={
-              <Game
-                isConnected={isConnected}
-                isGameCheckingInProgress={isGameCheckingInProgress}
-                gameTableCards={gameTableCards}
-                playingCards={playingCards}
-                onGameLoad={getGame}
-                onGameJoin={joinGame}
-                onCardSelected={updatePlayingCards}
-              />
+              <>
+                <Game
+                  isConnected={isConnected}
+                  isGameCheckingInProgress={isGameCheckingInProgress}
+                  gameTableCards={gameTableCards}
+                  playingCards={playingCards}
+                  onGameLoad={getGame}
+                  onCardSelected={updatePlayingCards}
+                  onJoinButtonClick={joinGame}
+                />
+                {/* render new player modal if there is no current player and game is not loading */}
+                {!isGameCheckingInProgress && !currentPlayerName && (
+                  <NewPlayerModal
+                    isOpen={isNewPlayerModalOpen}
+                    playerNames={getPlayerNames()}
+                    onFormSubmitted={addNewPlayerToGame}
+                    onClose={closeNewPlayerModal}
+                  />
+                )}
+              </>
             }
           />
           <Route path="*" element={<GameStarter />} />

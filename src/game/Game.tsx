@@ -1,5 +1,5 @@
 import { Center, Spinner, VStack } from "@chakra-ui/react";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import { useParams } from "react-router";
 import { SocketContext } from "../SocketContext";
 import { LocalStorageKey } from "../types/LocalStorageKey";
@@ -10,7 +10,6 @@ import GameActions from "./GameActions";
 import GamePlayerHands from "./GamePlayerHands";
 import GameShare from "./GameShare";
 import GameTable from "./GameTable";
-import NewPlayerModal from "./NewPlayerModal";
 
 /**
  * A component for main game features.
@@ -36,19 +35,17 @@ export default function Game(props: {
   onGameLoad: (gameId: string) => void;
 
   /**
-   * Gets called when new player can join the game.
-   *
-   * @param playerName name of the player to join the game
-   */
-  onGameJoin: (playerName: string) => void;
-
-  /**
    * Gets called when player selects a card.
    *
    * @param playerName name of the player who selected the card
    * @param selectedCardValue value of the card that has been selected, for example: "1", "2", "5", or "8"
    */
   onCardSelected: (playerName: string, selectedCardValue: string) => void;
+
+  /**
+   * Gets called on game share join button click.
+   */
+  onJoinButtonClick: () => void;
 }) {
   // get current player's name from the local storage
   const playerName = localStorage.getItem(LocalStorageKey.PlayerName);
@@ -59,10 +56,6 @@ export default function Game(props: {
   // set game id from the params in the URL
   const params = useParams();
   const gameId = params.gameId;
-
-  // initialize new player modal open flag state and set it to true if the player's name doesn't exist,
-  // which will then open the modal and prompt the player to type in the name
-  const [isNewPlayerModalOpen, setIsNewPlayerModalOpen] = useState(!playerName);
 
   // initialize socket from context
   const { socket } = useContext(SocketContext);
@@ -92,20 +85,6 @@ export default function Game(props: {
   }
 
   /**
-   * Closes the new player modal, sets the player's name to local storage and calls game join function prop.
-   *
-   * @param playerName name of the player to join the game
-   */
-  function joinGame(playerName: string) {
-    setIsNewPlayerModalOpen(false);
-
-    // update player name key in local storage with the player's changed name
-    localStorage.setItem(LocalStorageKey.PlayerName, playerName);
-
-    props.onGameJoin(playerName);
-  }
-
-  /**
    * Emits a reveal cards event so server can let other players in the game know that cards have been revealed.
    */
   function revealCards() {
@@ -128,15 +107,6 @@ export default function Game(props: {
     return props.gameTableCards?.some((card) => card.isRevealed);
   }
 
-  /**
-   * Returns a list of player names that are in the game.
-   *
-   * @returns a list of player names in an array of strings
-   */
-  function getPlayerNames() {
-    return props.gameTableCards?.map((card) => card.playerName);
-  }
-
   return (
     <>
       <Center height="90vh">
@@ -146,9 +116,9 @@ export default function Game(props: {
           <Spinner />
         ) : (
           <VStack spacing={12}>
-            {/* show the game share button to the game creator if game has no players */}
+            {/* show the game share part to the game creator if game has no players */}
             {isGameCreator && props.gameTableCards?.length === 0 && (
-              <GameShare />
+              <GameShare onJoinButtonClick={props.onJoinButtonClick} />
             )}
             {/* if the game has at least one player, show the game table */}
             {props.gameTableCards?.length > 0 && (
@@ -162,25 +132,19 @@ export default function Game(props: {
                 onCardsReveal={revealCards}
               />
             )}
-            {/* show player's cards in the hand if player is not game creator and cards are not currently revealed
+            {/* show player's cards in the hand if there is at least one player and cards are not currently revealed
             (to prevent the player from changing the card value after the cards have been revealed on the table) */}
-            {!isGameCreator && !areCardsRevealed() && (
-              <GamePlayerHands
-                playingCards={props.playingCards}
-                onCardSelected={updatePlayingCards}
-              />
-            )}
+            {playerName &&
+              props.gameTableCards?.length > 0 &&
+              !areCardsRevealed() && (
+                <GamePlayerHands
+                  playingCards={props.playingCards}
+                  onCardSelected={updatePlayingCards}
+                />
+              )}
           </VStack>
         )}
       </Center>
-      {/* render new player modal if current player is not game creator and game is not loading */}
-      {!props.isGameCheckingInProgress && !isGameCreator && (
-        <NewPlayerModal
-          isOpen={isNewPlayerModalOpen}
-          playerNames={getPlayerNames()}
-          onFormSubmitted={joinGame}
-        />
-      )}
     </>
   );
 }
