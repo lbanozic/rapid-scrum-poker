@@ -5,6 +5,7 @@ import { SocketContext } from "../SocketContext";
 import { LocalStorageKey } from "../types/LocalStorageKey";
 import { SocketEvent } from "../types/SocketEvent";
 import NavbarGameShareButton from "./NavbarGameShareButton";
+import NavbarGitHubRepoButton from "./NavbarGitHubRepoButton";
 import NavbarJoinButton from "./NavbarJoinButton";
 import NavbarLeaveGameButton from "./NavbarLeaveGameButton";
 import NavbarSettingsButton from "./NavbarSettingsButton";
@@ -114,6 +115,7 @@ export default function Navbar(props: {
           {!isPlayerAlreadyInGame && (
             <NavbarJoinButton onClick={props.onJoinButtonClick} />
           )}
+          <NavbarGitHubRepoButton />
           <NavbarLeaveGameButton onClick={leaveGame} />
         </HStack>
       )}
