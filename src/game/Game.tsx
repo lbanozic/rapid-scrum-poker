@@ -37,18 +37,18 @@ export default function Game(props: {
   /**
    * Gets called when player selects a card.
    *
-   * @param playerName name of the player who selected the card
+   * @param playerId id of the player who selected the card
    * @param selectedCardValue value of the card that has been selected, for example: "1", "2", "5", or "8"
    */
-  onCardSelected: (playerName: string, selectedCardValue: string) => void;
+  onCardSelected: (playerId: string, selectedCardValue: string) => void;
 
   /**
    * Gets called on game share join button click.
    */
   onJoinButtonClick: () => void;
 }) {
-  // get current player's name from the local storage
-  const playerName = localStorage.getItem(LocalStorageKey.PlayerName);
+  // get current player's id from the local storage
+  const playerId = localStorage.getItem(LocalStorageKey.PlayerId);
 
   // set game creator flag to true if there is created game id key in local storage, set false otherwise
   const isGameCreator = !!localStorage.getItem(LocalStorageKey.CreatedGameId);
@@ -79,8 +79,8 @@ export default function Game(props: {
    * @param selectedCardValue value of the card that has been selected
    */
   function updatePlayingCards(selectedCardValue: string) {
-    if (playerName) {
-      props.onCardSelected(playerName, selectedCardValue);
+    if (playerId) {
+      props.onCardSelected(playerId, selectedCardValue);
     }
   }
 
@@ -134,7 +134,7 @@ export default function Game(props: {
             )}
             {/* show player's cards in the hand if there is at least one player and cards are not currently revealed
             (to prevent the player from changing the card value after the cards have been revealed on the table) */}
-            {playerName &&
+            {playerId &&
               props.gameTableCards?.length > 0 &&
               !areCardsRevealed() && (
                 <GamePlayerHands

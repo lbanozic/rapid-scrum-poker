@@ -15,8 +15,8 @@ import SettingsModal from "./SettingsModal";
  * A component for navbar with items like: logo, settings button, share button and leave game button.
  */
 export default function Navbar(props: {
-  /** A list of player names to check if player is already in the game. */
-  playerNames: string[];
+  /** A list of player ids to check if player is already in the game. */
+  playerIds: string[];
 
   /**
    * Gets called on navbar join button click.
@@ -29,8 +29,8 @@ export default function Navbar(props: {
   // get current game id from the browser url
   const currentGameId = window.location.pathname.slice(1);
 
-  // get current player's name from the local storage
-  const playerName = localStorage.getItem(LocalStorageKey.PlayerName);
+  // get current player's id from the local storage
+  const playerId = localStorage.getItem(LocalStorageKey.PlayerId);
 
   // initialize settings modal open flag state and set it to false
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
@@ -38,8 +38,7 @@ export default function Navbar(props: {
   // initialize socket from context
   const { socket } = useContext(SocketContext);
 
-  const isPlayerAlreadyInGame =
-    playerName && props.playerNames?.includes(playerName);
+  const isPlayerAlreadyInGame = playerId && props.playerIds?.includes(playerId);
 
   /**
    * Sets settings modal opened flag state to true so settings modal can be opened.
@@ -74,6 +73,7 @@ export default function Navbar(props: {
       socket?.emit(
         SocketEvent.RenamePlayer,
         currentGameId,
+        playerId,
         currentPlayerName,
         changedPlayerName
       );
@@ -84,9 +84,9 @@ export default function Navbar(props: {
    * Emits leave game event for current player and navigates to home page.
    */
   function leaveGame() {
-    if (playerName) {
+    if (playerId) {
       // emit leave game socket event so server can let other clients in the game know that this player has left the game
-      socket?.emit(SocketEvent.LeaveGame, currentGameId, playerName);
+      socket?.emit(SocketEvent.LeaveGame, currentGameId, playerId);
     }
 
     // navigate to home page
@@ -110,7 +110,7 @@ export default function Navbar(props: {
         <HStack spacing={6}>
           <NavbarGameShareButton />
           {/* show settings button if current player exists */}
-          {playerName && <NavbarSettingsButton onClick={openSettingsModal} />}
+          {playerId && <NavbarSettingsButton onClick={openSettingsModal} />}
           {/* show join game button if current player doesn't exist or current player exists, but is not in the game */}
           {!isPlayerAlreadyInGame && (
             <NavbarJoinButton onClick={props.onJoinButtonClick} />
@@ -120,10 +120,9 @@ export default function Navbar(props: {
         </HStack>
       )}
       {/* render settings modal if current player exists */}
-      {playerName && (
+      {playerId && (
         <SettingsModal
           isOpen={isSettingsModalOpen}
-          playerNames={props.playerNames}
           onFormSubmitted={renamePlayer}
           onClose={closeSettingsModal}
         />

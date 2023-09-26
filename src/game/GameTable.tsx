@@ -14,7 +14,8 @@ export default function GameTable(props: {
       {/* show game table card for each card on the table */}
       {props.gameTableCards.map((gameTableCard) => (
         <GameTableCard
-          key={gameTableCard.playerName}
+          key={gameTableCard.playerId}
+          playerId={gameTableCard.playerId}
           playerName={gameTableCard.playerName}
           value={gameTableCard.value ?? undefined}
           isSelected={gameTableCard.isSelected}

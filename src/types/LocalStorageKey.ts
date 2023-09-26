@@ -2,6 +2,9 @@
  * An enum for local storage keys used in the game.
  */
 export enum LocalStorageKey {
+  /** Current game player's id. */
+  PlayerId = "player-id",
+
   /** Current game player's name. */
   PlayerName = "player-name",
 

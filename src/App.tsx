@@ -1,13 +1,14 @@
 import { ChakraProvider, theme } from "@chakra-ui/react";
+import { nanoid } from "nanoid";
 import { useEffect, useState } from "react";
 import { Route, Routes, useNavigate } from "react-router";
-import { io, Socket } from "socket.io-client";
+import { Socket, io } from "socket.io-client";
+import { playingCardsDefault } from "./PlayingCardsDefault";
+import { SocketContext } from "./SocketContext";
 import Game from "./game/Game";
 import GameStarter from "./game/GameStarter";
 import NewPlayerModal from "./game/NewPlayerModal";
 import Navbar from "./navbar/Navbar";
-import { playingCardsDefault } from "./PlayingCardsDefault";
-import { SocketContext } from "./SocketContext";
 import { CardGame } from "./types/CardGame";
 import { LocalStorageKey } from "./types/LocalStorageKey";
 import { PlayingCard } from "./types/PlayingCard";
@@ -53,7 +54,7 @@ export const App = () => {
     setSocket(
       io(
         process.env.REACT_APP_SOCKET_SERVER_URL ||
-          "https://rapid-scrum-poker-service.herokuapp.com"
+          "https://rapid-scrum-poker-service.onrender.com"
       )
     );
   }, []);
@@ -104,6 +105,7 @@ export const App = () => {
   function getGameTableCards(game: CardGame): TableCard[] {
     return (
       game.players?.map((player) => ({
+        playerId: player.id,
         playerName: player.name,
         value: player.cardValue,
         isSelected: player.isCardSelected,
@@ -142,6 +144,7 @@ export const App = () => {
   /**
    * Emits a get game event with given game id to the server and after server fetches the game,
    * sets the fetched game data.
+   *
    * Opens new player modal if current player is not set.
    *
    * @param gameId game id used to get the data from server
@@ -174,13 +177,13 @@ export const App = () => {
         }
 
         // if player is not already in the game, join player to the game
-        const playerName = localStorage.getItem(LocalStorageKey.PlayerName);
-        if (playerName) {
+        const playerId = localStorage.getItem(LocalStorageKey.PlayerId);
+        if (playerId) {
           const isPlayerAlreadyInGame = gameTableCards?.some(
-            (card) => card.playerName === playerName
+            (card) => card.playerId === playerId
           );
           if (!isPlayerAlreadyInGame && !isGameCreator) {
-            addNewPlayerToGame(playerName);
+            joinGame();
           }
         }
       }
@@ -191,31 +194,39 @@ export const App = () => {
   }
 
   /**
-   * Adds new player name to local storage, closes new player modal and joins new player to the game.
+   * Adds new player id and name to local storage, closes new player modal and joins new player to the game.
    *
    * @param newPlayerName new player's name to join the game
    */
   function addNewPlayerToGame(newPlayerName: string) {
     setIsNewPlayerModalOpen(false);
 
-    // update player name key in local storage with the player's changed name
+    // generate 10-character id value for new player, for example: Pi0yk32ip2
+    const newPlayerId = nanoid(10);
+
+    // set player id key in local storage with new player's id
+    localStorage.setItem(LocalStorageKey.PlayerId, newPlayerId);
+
+    // set player name key in local storage with new player's name
     localStorage.setItem(LocalStorageKey.PlayerName, newPlayerName);
 
     joinGame();
   }
 
   /**
-   * Emits a join game event with current game id and current player's name to the server
+   * Emits a join game event with current game id and current player's id and name to the server
    * so server can add the player to the game and update the game with the new player.
-   * If player's name is not set, opens new player modal.
+   *
+   * If player's id or name is not set, opens new player modal.
    */
   function joinGame() {
+    const playerId = localStorage.getItem(LocalStorageKey.PlayerId);
     const playerName = localStorage.getItem(LocalStorageKey.PlayerName);
 
-    if (playerName) {
+    if (playerId && playerName) {
       const currentGameId = getCurrentGameId();
 
-      socket?.emit(SocketEvent.JoinGame, currentGameId, playerName);
+      socket?.emit(SocketEvent.JoinGame, currentGameId, playerId, playerName);
 
       return;
     }
@@ -227,10 +238,10 @@ export const App = () => {
    * Updates cards in player's hands state and emits a update player card event
    * so server can update the game with updated cards in player's hands.
    *
-   * @param playerName player's name who changed the cards selection in hands
+   * @param playerId player's id who changed the cards selection in hands
    * @param selectedCardValue updated value of the card
    */
-  function updatePlayingCards(playerName: string, selectedCardValue: string) {
+  function updatePlayingCards(playerId: string, selectedCardValue: string) {
     const playingCardsAfterToggle = playingCards.map((card) => ({
       ...card,
       // check if cards was previously selected and update the selected flag
@@ -251,7 +262,7 @@ export const App = () => {
       socket?.emit(
         SocketEvent.UpdatePlayerCard,
         currentGameId,
-        playerName,
+        playerId,
         updatedPlayingCard.value,
         updatedPlayingCard.isSelected
       );
@@ -259,12 +270,12 @@ export const App = () => {
   }
 
   /**
-   * Returns a list of player's names currenly in the game.
+   * Returns a list of player's ids currenly in the game.
    *
-   * @returns a string array of player's names
+   * @returns a string array of player's ids
    */
-  function getPlayerNames() {
-    return gameTableCards?.map((card) => card.playerName);
+  function getPlayerIds() {
+    return gameTableCards?.map((card) => card.playerId);
   }
 
   /**
@@ -284,7 +295,7 @@ export const App = () => {
   return (
     <ChakraProvider theme={theme}>
       <SocketContext.Provider value={{ socket, setSocket }}>
-        <Navbar playerNames={getPlayerNames()} onJoinButtonClick={joinGame} />
+        <Navbar playerIds={getPlayerIds()} onJoinButtonClick={joinGame} />
         <Routes>
           <Route
             path="/"
@@ -312,7 +323,6 @@ export const App = () => {
                 {!isGameCheckingInProgress && !currentPlayerName && (
                   <NewPlayerModal
                     isOpen={isNewPlayerModalOpen}
-                    playerNames={getPlayerNames()}
                     onFormSubmitted={addNewPlayerToGame}
                     onClose={closeNewPlayerModal}
                   />

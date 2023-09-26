@@ -23,9 +23,6 @@ export default function SettingsModal(props: {
   /** Flag to check if settings modal is opened. */
   isOpen?: boolean;
 
-  /** List of player names to check uniqueness in. */
-  playerNames: string[];
-
   /**
    * Gets called when the settings form is valid and gets submitted.
    *
@@ -61,9 +58,6 @@ export default function SettingsModal(props: {
   // initialize player name empty flag state with true
   const [isPlayerNameEmpty, setIsPlayerNameEmpty] = useState(true);
 
-  // initialize player name taken flag state with false
-  const [isPlayerNameTaken, setIsPlayerNameTaken] = useState(false);
-
   // initialize form error message state with empty string
   const [formErrorMessage, setFormErrorMessage] = useState("");
 
@@ -96,21 +90,8 @@ export default function SettingsModal(props: {
       return false;
     }
 
-    // if player name is already taken, set validation message and return false
-    if (
-      props.playerNames.includes(playerNameTrimmed) &&
-      playerNameTrimmed !== currentPlayerName
-    ) {
-      setFormErrorMessage("Player name already taken");
-
-      setIsPlayerNameTaken(true);
-
-      return false;
-    }
-
     // form valid, reset validation flags to false
     setIsPlayerNameEmpty(false);
-    setIsPlayerNameTaken(false);
 
     return true;
   }
@@ -147,10 +128,8 @@ export default function SettingsModal(props: {
           <ModalCloseButton />
           <ModalBody>
             <FormControl
-              // form is invalid if the player's name is empty or already taken
-              isInvalid={
-                (isFormSubmitted && isPlayerNameEmpty) || isPlayerNameTaken
-              }
+              // form is invalid if the player's name is empty
+              isInvalid={isFormSubmitted && isPlayerNameEmpty}
             >
               <Input
                 size="lg"

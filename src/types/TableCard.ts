@@ -2,6 +2,9 @@
  * A type for all values associated with a card on the table.
  */
 export type TableCard = {
+  /** Player's id in the game. */
+  playerId: string;
+
   /** Player's name in the game holding the card. */
   playerName: string;
 
