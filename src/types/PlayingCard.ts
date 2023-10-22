@@ -7,4 +7,10 @@ export type PlayingCard = {
 
   /** Flag which determines if player selected the card. */
   isSelected?: boolean;
+
+  /** How much in CSS rems should the card be vertically repositioned. */
+  translateYRems?: number;
+
+  /** How much in degrees should the card be rotated. */
+  rotateDegrees?: number;
 };
