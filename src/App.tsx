@@ -315,6 +315,7 @@ export const App = () => {
                   isGameCheckingInProgress={isGameCheckingInProgress}
                   gameTableCards={gameTableCards}
                   playingCards={playingCards}
+                  playerIds={getPlayerIds()}
                   onGameLoad={getGame}
                   onCardSelected={updatePlayingCards}
                   onJoinButtonClick={joinGame}

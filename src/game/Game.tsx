@@ -27,6 +27,9 @@ export default function Game(props: {
   /** List of cards which player has in the hand. */
   playingCards: PlayingCard[];
 
+  /** A list of player ids to check if player is already in the game. */
+  playerIds: string[];
+
   /**
    * Gets called when all data required for a player to join the game is loaded.
    *
@@ -59,6 +62,8 @@ export default function Game(props: {
 
   // initialize socket from context
   const { socket } = useContext(SocketContext);
+
+  const isPlayerAlreadyInGame = playerId && props.playerIds?.includes(playerId);
 
   // call game load prop function if the game id exists, client is connected, game checking is not in progress and there are cards on the table
   useEffect(() => {
@@ -132,9 +137,10 @@ export default function Game(props: {
                 onCardsReveal={revealCards}
               />
             )}
-            {/* show player's cards in the hand if there is at least one player and cards are not currently revealed
+            {/* show player's cards in the hand if there is at least one player in the game and cards are not currently revealed
             (to prevent the player from changing the card value after the cards have been revealed on the table) */}
             {playerId &&
+              isPlayerAlreadyInGame &&
               props.gameTableCards?.length > 0 &&
               !areCardsRevealed() && (
                 <GamePlayerHands
