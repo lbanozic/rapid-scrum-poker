@@ -1,8 +1,8 @@
-import { Button, HStack, Input, Text } from "@chakra-ui/react";
+import { Button, Center, HStack, Input, Stack, Text } from "@chakra-ui/react";
 import React, { useState } from "react";
+import { GoZap } from "react-icons/go";
 import { IoMdCheckmark } from "react-icons/io";
 import { MdContentCopy } from "react-icons/md";
-import { GoZap } from "react-icons/go";
 
 /**
  * A component for game share button.
@@ -45,7 +45,7 @@ export default function GameShare(props: {
     }
 
     // copy current browser URL to clipboard
-    navigator.clipboard.writeText(gameLink);
+    navigator?.clipboard?.writeText(gameLink);
 
     // set game link button text state to copied so user can see that link has been copied
     setGameLinkButtonText(gameLinkCopiedText);
@@ -61,14 +61,13 @@ export default function GameShare(props: {
   }
 
   return (
-    <>
-      <Text fontSize="xl" fontWeight="bold">
+    <Center flexDirection="column" mx={2}>
+      <Text fontSize={["lg", "lg", "xl", "xl"]} fontWeight="bold" my={2}>
         Invite players by sharing the link below:
       </Text>
-      <HStack>
+      <Stack direction={["column", "row"]} align="center">
         <Input
-          size="lg"
-          width="25rem"
+          width="14rem"
           padding="1.65rem"
           borderRadius="16"
           variant="filled"
@@ -77,7 +76,6 @@ export default function GameShare(props: {
           onClick={selectLinkText}
         />
         <Button
-          size="lg"
           width="14rem"
           margin="4"
           padding="7"
@@ -89,9 +87,9 @@ export default function GameShare(props: {
         >
           {gameLinkButtonText}
         </Button>
-      </HStack>
+      </Stack>
       <HStack>
-        <Text fontSize="xl" fontWeight="bold">
+        <Text fontSize={["lg", "lg", "xl", "xl"]} fontWeight="bold">
           Or join the game:
         </Text>
         <Button
@@ -107,6 +105,6 @@ export default function GameShare(props: {
           Join
         </Button>
       </HStack>
-    </>
+    </Center>
   );
 }

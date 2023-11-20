@@ -1,4 +1,4 @@
-import { Center, Spinner, VStack } from "@chakra-ui/react";
+import { Box, Center, Flex, Spinner, VStack } from "@chakra-ui/react";
 import { useContext, useEffect } from "react";
 import { useParams } from "react-router";
 import { SocketContext } from "../SocketContext";
@@ -114,13 +114,15 @@ export default function Game(props: {
 
   return (
     <>
-      <Center height="90vh">
+      <Flex justifyContent="center" height="90vh">
         {/* if the game is still loading, show loading spinner indicator so users know that the game checking is still in progress,
         otherwise, show the game */}
         {props.isGameCheckingInProgress ? (
-          <Spinner />
+          <Center>
+            <Spinner />
+          </Center>
         ) : (
-          <VStack spacing={12}>
+          <VStack alignItems="normal" justifyContent="space-around">
             {/* show the game share part to the game creator if game has no players */}
             {isGameCreator && props.gameTableCards?.length === 0 && (
               <GameShare onJoinButtonClick={props.onJoinButtonClick} />
@@ -142,15 +144,17 @@ export default function Game(props: {
             {playerId &&
               isPlayerAlreadyInGame &&
               props.gameTableCards?.length > 0 &&
-              !areCardsRevealed() && (
+              (areCardsRevealed() ? (
+                <Box flex="1" />
+              ) : (
                 <GamePlayerHands
                   playingCards={props.playingCards}
                   onCardSelected={updatePlayingCards}
                 />
-              )}
+              ))}
           </VStack>
         )}
-      </Center>
+      </Flex>
     </>
   );
 }

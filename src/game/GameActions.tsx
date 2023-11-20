@@ -17,7 +17,13 @@ export default function GameActions(props: {
   onCardsReveal: () => void;
 }) {
   return (
-    <Flex justifyContent="space-evenly" flexWrap="wrap">
+    <Flex
+      justifyContent="center"
+      alignItems="center"
+      flexWrap="wrap"
+      flexDirection={["column", "row"]}
+      flex="1"
+    >
       <GameActionButton
         icon={<MdRestartAlt />}
         text="Restart game"

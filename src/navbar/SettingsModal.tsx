@@ -122,7 +122,7 @@ export default function SettingsModal(props: {
       initialFocusRef={initialFocusRef}
     >
       <ModalOverlay />
-      <ModalContent borderRadius="24" p={4}>
+      <ModalContent borderRadius="24" p={4} m={4}>
         <form onSubmit={submitPlayerNameForm}>
           <ModalHeader pt={8}>Player name</ModalHeader>
           <ModalCloseButton />

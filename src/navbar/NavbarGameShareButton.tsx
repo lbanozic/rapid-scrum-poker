@@ -1,11 +1,15 @@
 import { useState } from "react";
 import { IoMdShare } from "react-icons/io";
 import NavbarButton from "./NavbarButton";
+import { MenuItem } from "@chakra-ui/react";
 
 /**
  * A component for navbar game share button.
  */
-export default function NavbarGameShareButton() {
+export default function NavbarGameShareButton(props: {
+  /** Flag which determines if navbar game share button should be rendered as MenuItem component (part of MenuList component). */
+  isMenuItem?: boolean;
+}) {
   const shareGameLinkDefaultText = "Copy game link";
   const shareGameLinkCopiedText = "Link copied! ✓";
 
@@ -13,6 +17,8 @@ export default function NavbarGameShareButton() {
   const [shareGameLinkButtonText, setShareGameLinkButtonText] = useState(
     shareGameLinkDefaultText
   );
+
+  const gameShareIcon = <IoMdShare />;
 
   /**
    * Copies current value of browser URL to clipboard and sets share link button text.
@@ -35,10 +41,18 @@ export default function NavbarGameShareButton() {
     }, 2000);
   }
 
+  if (props.isMenuItem) {
+    return (
+      <MenuItem icon={gameShareIcon} onClick={copyGameLink}>
+        {shareGameLinkButtonText}
+      </MenuItem>
+    );
+  }
+
   return (
     <NavbarButton
       label={shareGameLinkButtonText}
-      icon={<IoMdShare />}
+      icon={gameShareIcon}
       onClick={copyGameLink}
     />
   );

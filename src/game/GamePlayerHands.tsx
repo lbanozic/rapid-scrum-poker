@@ -26,7 +26,7 @@ export default function GamePlayerHands(props: {
   }
 
   return (
-    <HStack spacing={0} position="fixed" bottom="2rem">
+    <HStack spacing={0} flex="1">
       {/* show game playing card for each card in player's hands */}
       {props.playingCards.map((playingCard) => (
         <GamePlayingCard

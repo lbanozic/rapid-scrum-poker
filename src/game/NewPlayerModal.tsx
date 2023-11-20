@@ -117,7 +117,7 @@ export default function NewPlayerModal(props: {
       initialFocusRef={initialFocusRef}
     >
       <ModalOverlay />
-      <ModalContent borderRadius="24" p={4}>
+      <ModalContent borderRadius="24" p={4} m={4}>
         <form onSubmit={submitPlayerNameForm}>
           <ModalHeader pt={8}>Enter a name you want to use</ModalHeader>
           <ModalCloseButton />

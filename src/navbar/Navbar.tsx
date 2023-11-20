@@ -1,5 +1,17 @@
-import { Box, Flex, HStack, Spacer } from "@chakra-ui/react";
+import {
+  Box,
+  Flex,
+  HStack,
+  IconButton,
+  Image,
+  Menu,
+  MenuButton,
+  MenuList,
+  Spacer,
+  useBreakpointValue,
+} from "@chakra-ui/react";
 import { useContext, useState } from "react";
+import { GiHamburgerMenu } from "react-icons/gi";
 import { Link, useNavigate } from "react-router-dom";
 import { SocketContext } from "../SocketContext";
 import { LocalStorageKey } from "../types/LocalStorageKey";
@@ -93,32 +105,59 @@ export default function Navbar(props: {
     navigate("/");
   }
 
+  // check if screen is mobile
+  const isMobile = useBreakpointValue({ base: true, md: false });
+
+  // set game options
+  const menuItems = (
+    <>
+      <NavbarGameShareButton isMenuItem={isMobile} />
+      {/* show settings button if current player exists */}
+      {playerId && (
+        <NavbarSettingsButton
+          isMenuItem={isMobile}
+          onClick={openSettingsModal}
+        />
+      )}
+      {/* show join game button if current player doesn't exist or current player exists, but is not in the game */}
+      {!isPlayerAlreadyInGame && (
+        <NavbarJoinButton
+          isMenuItem={isMobile}
+          onClick={props.onJoinButtonClick}
+        />
+      )}
+      <NavbarGitHubRepoButton isMenuItem={isMobile} />
+      <NavbarLeaveGameButton isMenuItem={isMobile} onClick={leaveGame} />
+    </>
+  );
+
   return (
-    <Flex my={4} mx={12} minHeight="3rem" alignItems="center">
+    <Flex my={4} mx={[2, 2, 4, 4]} minHeight="3rem" alignItems="center">
       <Box>
         <Link to="/">
-          <img
+          <Image
             src={process.env.PUBLIC_URL + "/logo.png"}
             alt="Logo"
-            width={250}
+            maxWidth={250}
           />
         </Link>
       </Box>
       <Spacer />
-      {/* show game action buttons if the game exists */}
-      {currentGameId && (
-        <HStack spacing={6}>
-          <NavbarGameShareButton />
-          {/* show settings button if current player exists */}
-          {playerId && <NavbarSettingsButton onClick={openSettingsModal} />}
-          {/* show join game button if current player doesn't exist or current player exists, but is not in the game */}
-          {!isPlayerAlreadyInGame && (
-            <NavbarJoinButton onClick={props.onJoinButtonClick} />
-          )}
-          <NavbarGitHubRepoButton />
-          <NavbarLeaveGameButton onClick={leaveGame} />
-        </HStack>
-      )}
+      {/* show game options if the game exists */}
+      {currentGameId &&
+        (isMobile ? (
+          <Menu>
+            <MenuButton
+              as={IconButton}
+              icon={<GiHamburgerMenu />}
+              variant="outline"
+              aria-label="Options"
+            />
+            <MenuList>{menuItems}</MenuList>
+          </Menu>
+        ) : (
+          <HStack spacing={6}>{menuItems}</HStack>
+        ))}
       {/* render settings modal if current player exists */}
       {playerId && (
         <SettingsModal

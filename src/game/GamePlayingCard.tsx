@@ -15,9 +15,6 @@ export default function GamePlayingCard(props: {
    */
   onCardSelected: (selectedCardValue: string) => void;
 }) {
-  let cardBackgroundColor = "white";
-  let cardBorderWidth = "0.5rem";
-  let cardBorderStyle = "solid";
   let cardBorderColor = "gray.400";
   let cardBorderColorHover = "gray.300";
   let cardBoxShadow = undefined;
@@ -39,19 +36,29 @@ export default function GamePlayingCard(props: {
     props.onCardSelected(props.playingCard.value);
   }
 
-  const cardContainerTransform = `translateY(-${props.playingCard.translateYRems}rem) rotate(${props.playingCard.rotateDegrees}deg)`;
-
   return (
-    <Box width="4rem" transform={cardContainerTransform}>
+    <Box
+      width={["1.65rem", "3rem", "3.5rem", "4rem"]}
+      transform={[
+        `translateY(-${
+          props.playingCard.translateYRems
+            ? props.playingCard.translateYRems / 2
+            : 0
+        }rem) rotate(${props.playingCard.rotateDegrees}deg)`,
+        `translateY(-${props.playingCard.translateYRems}rem) rotate(${props.playingCard.rotateDegrees}deg)`,
+        `translateY(-${props.playingCard.translateYRems}rem) rotate(${props.playingCard.rotateDegrees}deg)`,
+        `translateY(-${props.playingCard.translateYRems}rem) rotate(${props.playingCard.rotateDegrees}deg)`,
+      ]}
+    >
       <Box
         position="relative"
-        backgroundColor={cardBackgroundColor}
-        borderWidth={cardBorderWidth}
-        borderStyle={cardBorderStyle}
+        width={["2.7rem", "4.5rem", "5.25rem", "6rem"]}
+        height={["4.5rem", "7.5rem", "8.75rem", "10rem"]}
+        backgroundColor="white"
+        borderWidth={["0.3rem", "0.375rem", "0.45rem", "0.5rem"]}
+        borderStyle="solid"
+        borderRadius={["lg", "xl", "2xl", "2xl"]}
         borderColor={cardBorderColor}
-        width="6rem"
-        height="10rem"
-        borderRadius="2xl"
         boxShadow={cardBoxShadow}
         transform={cardTransform}
         // on hover, change the style and lift the card
@@ -65,7 +72,7 @@ export default function GamePlayingCard(props: {
         onClick={playingCardSelected}
       >
         <Center width="100%" height="100%">
-          <Box fontWeight="bold" fontSize="2xl">
+          <Box fontWeight="bold" fontSize={["md", "lg", "xl", "2xl"]}>
             {props.playingCard.value}
           </Box>
         </Center>

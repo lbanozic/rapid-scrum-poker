@@ -10,7 +10,13 @@ export default function GameTable(props: {
   gameTableCards: TableCard[];
 }) {
   return (
-    <Flex justifyContent="space-evenly" flexWrap="wrap" marginBottom="4rem">
+    <Flex
+      justifyContent="center"
+      flexWrap="wrap"
+      gap="2rem"
+      alignItems="center"
+      flex="1"
+    >
       {/* show game table card for each card on the table */}
       {props.gameTableCards.map((gameTableCard) => (
         <GameTableCard

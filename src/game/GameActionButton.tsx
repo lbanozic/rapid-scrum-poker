@@ -24,6 +24,7 @@ export default function GameActionButton(props: {
       padding="7"
       fontSize="xl"
       borderRadius="16"
+      minWidth="initial"
       rightIcon={props.icon}
       colorScheme={props.isPrimary ? "yellow" : undefined}
       onClick={props.onClick}
