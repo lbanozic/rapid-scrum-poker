@@ -1,19 +1,22 @@
-import { Badge, Box, Center, VStack } from "@chakra-ui/react";
+import { Badge, Box, Center, VStack, useColorMode } from "@chakra-ui/react";
 import { TableCard } from "../types/TableCard";
 
 /**
  * A component for showing the card on the table.
  */
 export default function GameTableCard(props: TableCard) {
-  let cardBackgroundColor = "gray.400";
   let cardBorderWidth: string[] | undefined = undefined;
   let cardBorderStyle: string | undefined = undefined;
   let cardBorderColor: string | undefined = undefined;
   let playerBadgeColorScheme: string | undefined = undefined;
 
+  // set card background color based on dark or light theme
+  const { colorMode } = useColorMode();
+  let cardBackgroundColor = colorMode === "dark" ? "gray.600" : "gray.400";
+
   // set different card styles if the card is revealed or selected
   if (props.isRevealed) {
-    cardBackgroundColor = "white";
+    cardBackgroundColor = colorMode === "dark" ? "gray.700" : "white";
     cardBorderWidth = ["0.3rem", "0.375rem", "0.45rem", "0.5rem"];
     cardBorderStyle = "solid";
     cardBorderColor = "yellow.400";

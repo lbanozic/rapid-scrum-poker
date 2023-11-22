@@ -9,6 +9,7 @@ import {
   MenuList,
   Spacer,
   useBreakpointValue,
+  useColorMode,
 } from "@chakra-ui/react";
 import { useContext, useState } from "react";
 import { GiHamburgerMenu } from "react-icons/gi";
@@ -131,15 +132,17 @@ export default function Navbar(props: {
     </>
   );
 
+  // set logo image based on dark or light theme
+  const { colorMode } = useColorMode();
+  const logoImageSrc = `${process.env.PUBLIC_URL}/${
+    colorMode === "light" ? "logo.png" : "logo-dark-theme.png"
+  }`;
+
   return (
     <Flex my={4} mx={[2, 2, 4, 4]} minHeight="3rem" alignItems="center">
       <Box>
         <Link to="/">
-          <Image
-            src={process.env.PUBLIC_URL + "/logo.png"}
-            alt="Logo"
-            maxWidth={250}
-          />
+          <Image src={logoImageSrc} alt="Logo" maxWidth={250} />
         </Link>
       </Box>
       <Spacer />

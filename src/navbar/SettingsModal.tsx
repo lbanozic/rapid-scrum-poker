@@ -2,14 +2,16 @@ import {
   Button,
   FormControl,
   FormErrorMessage,
+  FormLabel,
   Input,
   Modal,
   ModalBody,
   ModalCloseButton,
   ModalContent,
   ModalFooter,
-  ModalHeader,
   ModalOverlay,
+  Switch,
+  useColorMode,
   useDisclosure,
 } from "@chakra-ui/react";
 import React, { useEffect, useRef, useState } from "react";
@@ -113,6 +115,8 @@ export default function SettingsModal(props: {
     }
   }
 
+  const { colorMode, toggleColorMode } = useColorMode();
+
   return (
     <Modal
       isCentered
@@ -124,13 +128,14 @@ export default function SettingsModal(props: {
       <ModalOverlay />
       <ModalContent borderRadius="24" p={4} m={4}>
         <form onSubmit={submitPlayerNameForm}>
-          <ModalHeader pt={8}>Player name</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <FormControl
+              mt={6}
               // form is invalid if the player's name is empty
               isInvalid={isFormSubmitted && isPlayerNameEmpty}
             >
+              <FormLabel>Player name</FormLabel>
               <Input
                 size="lg"
                 padding="1.65rem"
@@ -142,6 +147,17 @@ export default function SettingsModal(props: {
               <FormErrorMessage marginLeft="1.8rem">
                 {formErrorMessage}
               </FormErrorMessage>
+            </FormControl>
+            <FormControl mt={6} display="flex" alignItems="center">
+              <FormLabel htmlFor="color-mode-switch" mb={0}>
+                Dark mode:
+              </FormLabel>
+              <Switch
+                id="color-mode-switch"
+                size="lg"
+                isChecked={colorMode === "dark"}
+                onChange={toggleColorMode}
+              />
             </FormControl>
           </ModalBody>
           <ModalFooter>

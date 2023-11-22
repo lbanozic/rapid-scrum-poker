@@ -1,4 +1,4 @@
-import { Box, Center } from "@chakra-ui/react";
+import { Box, Center, useColorMode } from "@chakra-ui/react";
 import { PlayingCard } from "../types/PlayingCard";
 
 /**
@@ -20,6 +20,10 @@ export default function GamePlayingCard(props: {
   let cardBoxShadow = undefined;
   let cardTransform = undefined;
   const transformUp = "translateY(-1rem)";
+
+  // set card background color based on dark or light theme
+  const { colorMode } = useColorMode();
+  const cardBackgroundColor = colorMode === "dark" ? "gray.700" : "white";
 
   // if this card is selected, set selected card styles and lift the card
   if (props.playingCard.isSelected) {
@@ -54,7 +58,7 @@ export default function GamePlayingCard(props: {
         position="relative"
         width={["2.7rem", "4.5rem", "5.25rem", "6rem"]}
         height={["4.5rem", "7.5rem", "8.75rem", "10rem"]}
-        backgroundColor="white"
+        backgroundColor={cardBackgroundColor}
         borderWidth={["0.3rem", "0.375rem", "0.45rem", "0.5rem"]}
         borderStyle="solid"
         borderRadius={["lg", "xl", "2xl", "2xl"]}
